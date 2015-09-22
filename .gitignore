@@ -14,3 +14,6 @@
 
 # Ignore env vars
 .env
+
+# Ignore schema
+/db/schema.rb
