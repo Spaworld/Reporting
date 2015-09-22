@@ -19,7 +19,7 @@
                 <% channel.orders.each_with_index do |order, index| %>
                   <tr>
                     <th scope="row"><%= index %></th>
-                    <td class="warning">Not available yet.<%#= order.sku %></td>
+                    <td><%= order.sku %></td>
                     <td class="warning">Not available yet.<%#= order.title %></td>
                     <td><%= number_to_currency(order.C009_TOTALPRICE) %></td>
                   </tr>
