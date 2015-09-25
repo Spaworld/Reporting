@@ -1,34 +1,74 @@
-<div class="row">
-  <div class="container">
-    <div class="col-md-12">
-      <h1>Channels</h1>
-      <% @channels.each do |channel| %>
+<div class="container">
+  <div class="row">
+  <h1 class="text-center">Today's Orders</h1>
+    <!-- Summary -->
+    <div class="col-md-4 col-xs-12">
+      <div class="bs-example" data-example-id="table-within-panel">
         <div class="panel panel-default">
-          <div class="panel-heading"><%= channel.name %> | ID: <%= channel.id %></div>
-          <div class="panel-body">
-            <table class="table table-striped">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>SKU</th>
-                  <th>Title</th>
-                  <th>Price</th>
-                </tr>
-              </thead>
-              <tbody>
-                <% channel.orders.each_with_index do |order, index| %>
-                  <tr>
-                    <th scope="row"><%= index %></th>
-                    <td><%= order.sku %></td>
-                    <td class="warning">Not available yet.<%#= order.title %></td>
-                    <td><%= number_to_currency(order.C009_TOTALPRICE) %></td>
-                  </tr>
+          <!-- Default panel contents -->
+          <div class="panel-heading">Summary of orders</div>
+
+          <!-- Table -->
+          <table class="table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Channel</th>
+                <th>Today's Orders</th>
+                <th>Total Orders</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @channels.each do |channel| %>
+              <tr>
+                <th scope="row">1</th>
+                <td><%= channel.name %></td>
+                <% if channel.orders.by_date(Time.now - 1.day).count <= 1 %>
+                  <td> 0 </td>
+                <% else %>
+                  <td class=\"success\"><%= channel.orders.by_date(Time.now - 1.day).count %></td>
                 <% end %>
-              </tbody>
-            </table>
-          </div>
+                <td><%= channel.orders.count %></td>
+              </tr>
+              <% end %>
+            </tbody>
+          </table>
         </div>
-      <% end %>
+      </div>
+    </div>
+
+    <!-- Breakdown -->
+    <div class="col-md-8 col-xs-12">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Chennel</th>
+            <th>Date</th>
+            <th>Item(s) purchased</th>
+            <th>Total Price</th>
+          </tr>
+        </thead>
+        <% @orders.each_with_index do |order, index| %>
+        <tbody>
+          <tr>
+            <th scope="row"><%= index %></th>
+            <td><%= order.channel.name %></td>
+            <td><%= order.created_at.to_date %></td>
+            <td>
+              <ul>
+                <% order.order_details.each do |order_detail| %>
+                  <li>
+                    <%= order_detail.product.title unless order_detail.product.nil? %>
+                  </li>
+                <% end %>
+              </ul>
+            </td>
+            <td><%= number_to_currency(order.total_price) %></td>
+          </tr>
+        </tbody>
+        <% end %>
+      </table>
     </div>
   </div>
 </div>
