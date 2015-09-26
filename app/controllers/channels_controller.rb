@@ -1,5 +1,5 @@
 class ChannelsController < ApplicationController
-  before_filter :set_variables
+  before_action :set_variables
 
   def index
     @orders = Order.all.by_date(Time.now)
@@ -34,4 +34,5 @@ class ChannelsController < ApplicationController
   def set_variables
     @channels = Channel.all
   end
+
 end

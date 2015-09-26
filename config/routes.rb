@@ -2,10 +2,8 @@ Rails.application.routes.draw do
 
   get '/' => 'channels#index', as: :root
 
-  # Account / Sales
   post '/:start_date/:end_date' => 'channels#pick_dates', as: 'pick_dates'
   post '/:date' => 'channels#pick_single_date', as: 'pick_single_date_path'
-# Account / Sales
-  #patch 'account/sales/toggle_shipped_state/:order_id' => 'accounts/sales#toggle_shipped_state', as: 'toggle_shipped_state'
 
+  devise_for :users, path: "auth", path_names: { sign_in: 'login', sign_out: 'logout', password: 'secret', confirmation: 'verification', unlock: 'unblock', registration: 'register', sign_up: 'cmon_let_me_in' }
 end
