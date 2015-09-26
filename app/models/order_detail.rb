@@ -1,4 +1,5 @@
 class OrderDetail < ActiveRecord::Base
+  establish_connection :external_db
   self.table_name = ENV['ORDER_DETAILS_TABLE_NAME']
 
   belongs_to :order, foreign_key: ENV['ORDER_DETAILS_ORDERS_FOREIGN_KEY']

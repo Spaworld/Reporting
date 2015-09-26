@@ -1,4 +1,5 @@
 class Product < ActiveRecord::Base
+  establish_connection :external_db
   self.table_name = ENV['PRODUCTS_TABLE_NAME']
 
   has_many :order_details, foreign_key: ENV['ORDER_DETAILS_PRODUCTS_FOREIGN_KEY']
