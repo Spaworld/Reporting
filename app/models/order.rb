@@ -1,4 +1,5 @@
 class Order < ActiveRecord::Base
+  establish_connection :external_db
   self.table_name = ENV['ORDERS_TABLE_NAME']
 
   belongs_to :channel, foreign_key: ENV['CHANNELS_FOREIGN_KEY']
