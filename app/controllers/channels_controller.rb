@@ -1,16 +1,37 @@
 class ChannelsController < ApplicationController
-
   before_filter :set_variables
 
   def index
-    @orders = Order.by_date(Time.now - 1.day)#.where('channel = ?', Channel.where(id: @selected_channels))
-    @channels = Channel.where(id: @selected_channels)
+    @orders = Order.all.by_date(Time.now)
+    @date_range = Time.now.to_date
+  end
+
+  def pick_dates
+    @start_date = params[:date][:start_date]
+    @end_date = params[:date][:end_date]
+    @date_range = @start_date...@end_date
+    if @start_date.nil? || @end_date.nil?
+      flash[:warning] = 'Please select both, starting and ending dates / points'
+    elsif @start_date == @end_date
+      flash[:warning] = 'Use a single date selector'
+    else
+      @orders = Order.by_date_range(@start_date, @end_date)
+    end
+    render :index
+  end
+
+  def single_day
+    @date = params[:date][:requested_date]
+    if @date.nil?
+      flash[:warning] = 'Give me a date'
+    else
+      @orders = Order.by_date(@date)
+    end
   end
 
   private
 
   def set_variables
-    @selected_channels = 296,155,275,390,40006,40007,362,40403,394,340,40015,40108,273,25,353,338
+    @channels = Channel.all
   end
-
 end

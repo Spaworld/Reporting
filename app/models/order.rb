@@ -9,7 +9,9 @@ class Order < ActiveRecord::Base
   alias_attribute :created_at, ENV['ORDERS_DATE']
   alias_attribute :total_price, ENV['ORDERS_PRICE']
 
-  scope :by_date, -> (requested_datetime) { where("#{ENV['ORDERS_DATE']} = ?", requested_datetime.to_date) }
-  scope :selected_channels, -> { where 'channel = ?', Channel.where(id: ENV['SELECTED_CHANNELS']) }
 
+  default_scope { where(channel: Channel.all) }
+  # scope :by_selected_channels, -> { where('channel = ?', Channel.all) }
+  scope :by_date, -> (requested_datetime) { where("#{ENV['ORDERS_DATE']} = ?", requested_datetime) }
+  scope :by_date_range, -> (start_date, end_date) { where(created_at: start_date..end_date) }
 end
