@@ -1,106 +1,74 @@
-    <h1 class="text-center">Today's Orders</h1>
+    <h1 class="text-center"><%= @start_date %> <%= "to #{@end_date}" unless @end_date.blank? %> Orders:</h1>
 
     <!-- Date Range Picker -->
-    <%= form_for :channel, url: pick_dates_path(:start_date,:end_date) do |f| %>
-      <div class="container">
-        <div class="row">
-          <div class="col-md-6 col-xs-6">
-            <h4>Pick a starting point</h4>
-            <div class="form-group">
-              <div class='input-group date' id='datetimepicker1'>
-                  <%= text_field :date, :start_date, class: 'form-control' %>
-                <span class="input-group-addon">
-                  <span class="glyphicon glyphicon-calendar"></span>
-                </span>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-6 col-xs-6">
-            <h4>Pick an ending point</h4>
-            <div class="form-group">
-              <div class='input-group date' id='datetimepicker2'>
-                  <%= text_field :date, :end_date, class: 'form-control' %>
-                <span class="input-group-addon">
-                  <span class="glyphicon glyphicon-calendar"></span>
-                </span>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-12">
-            <%= f.submit 'Show Orders for Date Range', class: 'btn btn-default', data: { disable_with: "Please wait..." } %>
-          </div>
-        </div>
-      </div>
-    <% end %>
+    <%= render 'date_picker' %>
 
     <!-- Summary -->
-    <div class="col-md-4 col-xs-12">
-      <div data-example-id="table-within-panel">
-        <div class="panel-heading">
-          <h4>Summary of orders</h4>
+    <div class="row">
+      <div class="col-md-4 col-xs-12">
+        <div data-example-id="table-within-panel">
+          <div class="panel-heading">
+            <h4>Summary:</h4>
+          </div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Channel</th>
+                <th><%= @start_date %> <%= "to #{@end_date}" unless @end_date.blank? %> orders</th>
+                <th>Total Orders</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @channels.each_with_index do |channel, index| %>
+                <tr>
+                  <th scope="row"><%= index + 1 %></th>
+                  <td><%= channel.name %></td>
+                  <td <%= "class=\"success\"".html_safe if channel.orders.by_date_range(@start_date, @end_date).count >= 1 %>><%= channel.orders.by_date_range(@start_date, @end_date).count %></td>
+                  <td><%= channel.orders.count %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
         </div>
-        <table class="table">
+      </div>
+
+    <!-- Breakdown -->
+      <div class="col-md-8 col-xs-12">
+        <h4>Breakdown:</h4>
+        <table class="table table-hover">
           <thead>
             <tr>
               <th>#</th>
               <th>Channel</th>
-              <th>Today's Orders</th>
-              <th>Total Orders</th>
+              <th>Date</th>
+              <th>Item(s) purchased</th>
+              <th>Total Price</th>
             </tr>
           </thead>
-          <tbody>
-            <% @channels.each do |channel| %>
-            <tr>
-              <th scope="row">1</th>
-              <td><%= channel.name %></td>
-              <td class=\"success\"><%= channel.orders.by_date_range(Time.now - 1.day, Time.now).count %></td>
-              <td><%= channel.orders.count %></td>
-            </tr>
+          <% if !@orders.nil? %>
+            <% @orders.each_with_index do |order, index| %>
+            <tbody>
+              <tr>
+                <th scope="row"><%= index + 1 %></th>
+                <td><%= order.channel.name %></td>
+                <td><%= order.created_at.to_date %></td>
+                <td>
+                  <ul>
+                    <% order.order_details.each do |order_detail| %>
+                      <li>
+                        <%= order_detail.product.title unless order_detail.product.nil? %>
+                      </li>
+                    <% end %>
+                  </ul>
+                </td>
+                <td><%= number_to_currency(order.total_price) %></td>
+              </tr>
+            </tbody>
             <% end %>
-          </tbody>
+          <% else %>
+            <span class="label label-warning">No orders to display</span>
+          <% end %>
         </table>
       </div>
     </div>
-
-    <!-- Breakdown -->
-    <div class="col-md-8 col-xs-12">
-      <br/>
-      <h4>Today's orders</h4>
-      <table class="table table-hover">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Channel</th>
-            <th>Date</th>
-            <th>Item(s) purchased</th>
-            <th>Total Price</th>
-          </tr>
-        </thead>
-        <% @orders.each_with_index do |order, index| %>
-        <tbody>
-          <tr>
-            <th scope="row"><%= index %></th>
-            <td><%= order.channel.name %></td>
-            <td><%= order.created_at.to_date %></td>
-            <td>
-              <ul>
-                <% order.order_details.each do |order_detail| %>
-                  <li>
-                    <%= order_detail.product.title unless order_detail.product.nil? %>
-                  </li>
-                <% end %>
-              </ul>
-            </td>
-            <td><%= number_to_currency(order.total_price) %></td>
-          </tr>
-        </tbody>
-        <% end %>
-      </table>
-    </div>
-
-
-<script type="text/javascript">
-    $(function () {
-        $('#datetimepicker1, #datetimepicker2, #datetimepicker3').datetimepicker();
-    });
-</script>

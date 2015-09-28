@@ -15,6 +15,8 @@ class Channel < ActiveRecord::Base
 
   default_scope { where(id: @selected_channels) }
 
+  scope :orders_by_date, -> (date) { where(orders[:by_date], date) }
+
   private
   @selected_channels = ENV['SELECTED_CHANNELS'].split(',')
 end

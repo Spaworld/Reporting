@@ -17,3 +17,6 @@
 //= require moment
 //= require bootstrap
 //= require bootstrap-datetimepicker
+
+$('.alert').alert();
+window.setTimeout(function() { $('.alert').alert('close'); }, 3333);
