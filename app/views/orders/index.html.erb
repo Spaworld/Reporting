@@ -1,0 +1,39 @@
+<h1 class="text-center">Top Sellers</h1>
+<% @channels.each do |channel| %>
+  <div class="col-md-2">
+    <div class="panel panel-default">
+      <div class="panel-heading"><%= channel.name %></div>
+      <div class="panel-body">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Quantity:</th>
+              <th>Product name:</th>
+              <th>SKU:</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <% channel.orders.each_with_index do |order, index| %>
+                <th scope="row"><%= index %></th>
+                <td><%= order.quantity %></td>
+                <% order.products.each do |product| %>
+                  <td><%= product.name %></td>
+                <% end %>
+              <% end %>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+
+    <h5></h5>
+    <% channel.orders.each do |order| %>
+      <%= order.created_at.to_date %><br/>
+      <%= number_to_currency(order.total_price) %>
+    <% end %>
+  </div><!--end_col-md-2-->
+<% end %>
+

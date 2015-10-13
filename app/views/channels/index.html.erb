@@ -1,0 +1,74 @@
+    <h1 class="text-center"><%= @start_date %> <%= "to #{@end_date}" unless @end_date.blank? %> Orders:</h1>
+
+    <!-- Date Range Picker -->
+    <%= render 'date_picker' %>
+
+    <!-- Summary -->
+    <div class="row">
+      <div class="col-md-4 col-xs-12">
+        <div data-example-id="table-within-panel">
+          <div class="panel-heading">
+            <h4>Summary:</h4>
+          </div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Channel</th>
+                <th><%= @start_date %> <%= "to #{@end_date}" unless @end_date.blank? %> orders</th>
+                <th>Total Orders</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @channels.each_with_index do |channel, index| %>
+                <tr>
+                  <th scope="row"><%= index + 1 %></th>
+                  <td><%= channel.name %></td>
+                  <td <%= "class=\"success\"".html_safe if channel.orders.by_date_range(@start_date, @end_date).count >= 1 %>><%= channel.orders.by_date_range(@start_date, @end_date).count %></td>
+                  <td><%= channel.orders.count %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    <!-- Breakdown -->
+      <div class="col-md-8 col-xs-12">
+        <h4>Breakdown:</h4>
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Channel</th>
+              <th>Date</th>
+              <th>Item(s) purchased</th>
+              <th>Total Price</th>
+            </tr>
+          </thead>
+          <% if !@orders.nil? %>
+            <% @orders.each_with_index do |order, index| %>
+            <tbody>
+              <tr>
+                <th scope="row"><%= index + 1 %></th>
+                <td><%= order.channel.name %></td>
+                <td><%= order.created_at.to_date %></td>
+                <td>
+                  <ul>
+                    <% order.order_details.each do |order_detail| %>
+                      <li>
+                        <%= order_detail.product.title unless order_detail.product.nil? %>
+                      </li>
+                    <% end %>
+                  </ul>
+                </td>
+                <td><%= number_to_currency(order.total_price) %></td>
+              </tr>
+            </tbody>
+            <% end %>
+          <% else %>
+            <span class="label label-warning">No orders to display</span>
+          <% end %>
+        </table>
+      </div>
+    </div>
