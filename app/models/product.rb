@@ -6,6 +6,9 @@ class Product < ActiveRecord::Base
   has_many :orders, through: :order_details
   has_many :reviews
 
+
   alias_attribute :sku, ENV['PRODUCTS_SKU']
   alias_attribute :title, ENV['PRODUCTS_TITLE']
+
+  scope :with_orders, -> {where('orders > ?', 0)}
 end

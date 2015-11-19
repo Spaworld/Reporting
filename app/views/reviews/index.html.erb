@@ -1,1 +1,25 @@
-<h1>sdfdsfdfd</h1>
+<% @reviews.each do |review| %>
+
+<% end %>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Title</th>
+      <th>Channel</th>
+      <th>SKU</th>
+      <th>Finished?</th>
+    </tr>
+  </thead>
+  <tbody>
+  <% @reviews.each do |review| %>
+    <tr>
+      <th scope="row">1</th>
+      <td><%= review.title %></td>
+      <td><%= review.order.channel %></td>
+      <td><%= review.sku %></td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
